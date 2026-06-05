@@ -1,6 +1,12 @@
-[Install in VS Code](vscode://ms-vscode.vscode-mcp/install?package=KC.SolutionServer&version=1.0.0)
+<a href="vscode://ms-vscode.vscode-mcp/install?package=KC.SolutionServer&version=1.0.0">
+  <img src="https://img.shields.io/badge/Install%20in-VS%20Code-blue?logo=visualstudiocode" />
+</a>
 
-[Install in Visual Studio](visualstudio://mcp/install?package=KC.SolutionServer&version=1.0.0)
+
+<a href="visualstudio://mcp/install?package=KC.SolutionServer&version=1.0.0">
+  <img src="https://img.shields.io/badge/Install%20in-Visual%20Studio-purple?logo=visualstudio" />
+</a>
+
 
 --- 
  # SolutionServer
