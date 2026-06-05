@@ -1,0 +1,29 @@
+﻿{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-10-17/server.schema.json",
+  "name": "SolutionServer",
+  "description": "A local stdio MCP server for discovering solutions, listing projects, enumerating project files, and reading bounded text content from a configured workspace root.",
+  "version": "1.0.0",
+  "packages": [
+    {
+      "registryType": "nuget",
+      "identifier": "SolutionServer",
+      "version": "1.0.0",
+      "transport": {
+        "type": "stdio"
+      },
+      "packageArguments": [],
+      "environmentVariables": [
+        {
+          "name": "SOLUTION_SERVER_ROOT",
+          "description": "Absolute path to the local workspace root that SolutionServer is allowed to inspect.",
+          "isRequired": true,
+          "isSecret": false
+        }
+      ]
+    }
+  ],
+  "repository": {
+    "url": "https://github.com/<your-github-org>/SolutionServer",
+    "source": "github"
+  }
+}
