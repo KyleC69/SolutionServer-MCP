@@ -1,4 +1,9 @@
-﻿# SolutionServer
+[Install in VS Code](vscode://ms-vscode.vscode-mcp/install?package=KC.SolutionServer&version=1.0.0)
+
+[Install in Visual Studio](visualstudio://mcp/install?package=KC.SolutionServer&version=1.0.0)
+
+--- 
+ # SolutionServer
 
 SolutionServer is a production-oriented local Model Context Protocol (MCP) server built with C# and .NET 10. It is designed for public distribution and gives MCP clients a safe, focused set of tools for inspecting a local solution or workspace.
 
