@@ -7,24 +7,25 @@ using SolutionServer.Services;
 
 namespace SolutionServer.Tools;
 
+[McpServerToolType]
 internal sealed class WorkspaceTools(WorkspaceService workspaceService)
 {
     [McpServerTool]
-    [Description("Summarizes the configured local solution or workspace by discovering the solution file and projects under the allowed root.")]
+    [Description("Provides a summary of the workspace, including the absolute root path, the solution file (if any), and a list of all discovered project files.")]
     public WorkspaceSummary GetWorkspaceSummary()
     {
         return workspaceService.GetWorkspaceSummary();
     }
 
     [McpServerTool]
-    [Description("Lists the supported project files discovered under the configured local workspace root.")]
+    [Description("Returns a list of all supported project files (`*.csproj`, `*.fsproj`, `*.vbproj`) located under the configured workspace root.")]
     public IReadOnlyList<ProjectInfo> ListProjects()
     {
         return workspaceService.ListProjects();
     }
 
     [McpServerTool]
-    [Description("Lists files within the directory of a specific project file. The project path must be relative to the configured workspace root.")]
+    [Description("Given a relative project file path, returns the full set of files within that project's directory tree, optionally limited by a maximum result count.")]
     public ProjectFilesResult ListProjectFiles(
         [Description("Relative path to the target project file.")] string projectPath,
         [Description("Maximum number of files to return, clamped between 1 and 500.")] int maxResults = 200)
@@ -33,7 +34,7 @@ internal sealed class WorkspaceTools(WorkspaceService workspaceService)
     }
 
     [McpServerTool]
-    [Description("Reads a bounded range of lines from a text file inside the configured workspace root.")]
+    [Description("Retrieves a specific range of lines from a text file within the workspace root. The caller specifies the file path, a one‑based start line, and the number of lines to read (capped at 400).")]
     public FileReadResult ReadTextFile(
         [Description("Relative path to the text file.")] string path,
         [Description("One-based starting line number.")] int startLine = 1,

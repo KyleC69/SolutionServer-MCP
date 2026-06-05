@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>net10.0</TargetFramework>
-    <RuntimeIdentifiers>win-x64;win-arm64;osx-arm64;linux-x64;linux-arm64;linux-musl-x64</RuntimeIdentifiers>
+    <RuntimeIdentifiers>win-x64;</RuntimeIdentifiers>
     <OutputType>Exe</OutputType>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
@@ -14,12 +14,13 @@
     <Authors>SolutionServer Contributors</Authors>
     <Company>SolutionServer Contributors</Company>
     <Copyright>Copyright © SolutionServer Contributors</Copyright>
-    <RepositoryUrl>https://github.com/&lt;your-github-org&gt;/SolutionServer</RepositoryUrl>
+    <RepositoryUrl>https://github.com/KyleC69/SolutionServer-MCP.git</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
-    <PackageProjectUrl>https://github.com/&lt;your-github-org&gt;/SolutionServer</PackageProjectUrl>
+    <PackageProjectUrl>https://github.com/KyleC69/SolutionServer-MCP.git</PackageProjectUrl>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
+	  <PublishDir>..\..\PublishOutput\</PublishDir>
     <Deterministic>true</Deterministic>
     <ContinuousIntegrationBuild Condition="'$(CI)' != ''">true</ContinuousIntegrationBuild>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
@@ -37,7 +38,7 @@
     <PublishSingleFile>true</PublishSingleFile>
 
     <!-- Configure the MCP server to be a native AOT application with invariant globalization -->
-    <PublishAot>true</PublishAot>
+    <PublishAot>false</PublishAot>
     <InvariantGlobalization>true</InvariantGlobalization>
 
     <!-- Set recommended package metadata -->
@@ -46,10 +47,13 @@
     <PackageVersion>1.0.0</PackageVersion>
     <PackageTags>AI;MCP;server;stdio;dotnet;solution;workspace;developer-tools</PackageTags>
     <Description>SolutionServer is a local MCP server for discovering .NET solutions, enumerating projects, listing project files, and reading bounded file content from a configured workspace root.</Description>
+    <Platforms>AnyCPU;x64</Platforms>
+    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+    <PackageReleaseNotes>RELEASE_NOTES.md</PackageReleaseNotes>
   </PropertyGroup>
 
   <ItemGroup>
-    <Content Include=".vscode\mcp.json" />
+    <Content Include=".vscode\settings.json" />
   </ItemGroup>
 
   <!-- Include additional files for browsing the MCP server. -->
@@ -64,4 +68,17 @@
     <PackageReference Include="ModelContextProtocol" Version="1.4.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include=".github\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="README.md">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
+  </ItemGroup>
+  <Target Name="ShowPublishPath" AfterTargets="AfterPublish">
+	  <Message Importance="High" Text="Publish directory: $(PublishDir)" />
+  </Target>
 </Project>

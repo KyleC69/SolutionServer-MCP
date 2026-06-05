@@ -1,0 +1,18 @@
+﻿{
+  "$schema": "https://json.schemastore.org/mcp.json",
+  "servers":
+  {
+    "SolutionServer":
+    {
+      "type": "stdio",
+      "command": "F:\\_dev_drv_root_\\Repos\\SolutionServer\\PublishOutput\\SolutionServer.exe",
+      "args":
+      [
+      ],
+      "env":
+      {
+        "SOLUTION_SERVER_ROOT": "F:/_dev_drv_root_/Repos/SolutionServer/SolutionServer"
+      }
+    }
+  }
+}

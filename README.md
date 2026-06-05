@@ -1,15 +1,4 @@
-<a href="vscode://ms-vscode.vscode-mcp/install?package=KC.SolutionServer&version=1.0.0">
-  <img src="https://img.shields.io/badge/Install%20in-VS%20Code-blue?logo=visualstudiocode" />
-</a>
-
-
-<a href="visualstudio://mcp/install?package=KC.SolutionServer&version=1.0.0">
-  <img src="https://img.shields.io/badge/Install%20in-Visual%20Studio-purple?logo=visualstudio" />
-</a>
-
-
---- 
- # SolutionServer
+﻿# SolutionServer
 
 SolutionServer is a production-oriented local Model Context Protocol (MCP) server built with C# and .NET 10. It is designed for public distribution and gives MCP clients a safe, focused set of tools for inspecting a local solution or workspace.
 
@@ -17,14 +6,14 @@ The server is intended for developer workflows in Visual Studio, VS Code, and ot
 
 ## What it does
 
-SolutionServer exposes a small, practical toolset for local workspace inspection:
+SolutionServer provides a focused, read‑only API for local workspace inspection:
 
-- `GetWorkspaceSummary` - discovers the current workspace root, solution file, and available projects
-- `ListProjects` - lists supported project files under the configured workspace root
-- `ListProjectFiles` - enumerates files under a selected project directory
-- `ReadTextFile` - reads a bounded range of lines from a text file inside the configured workspace root
+- **`GetWorkspaceSummary`** – Returns the absolute workspace root, the solution file (if present), and a list of all recognized project files.
+- **`ListProjects`** – Enumerates every supported project file (`*.csproj`, `*.fsproj`, `*.vbproj`) under the workspace root.
+- **`ListProjectFiles`** – Given a project file path, returns all files contained in that project’s directory tree.
+- **`ReadTextFile`** – Reads a specific line range (max 400 lines) from a text file inside the workspace root.
 
-The server only inspects files inside the configured `SOLUTION_SERVER_ROOT` directory and rejects paths outside that boundary.
+All operations are confined to the directory specified by `SOLUTION_SERVER_ROOT`; the server never writes or executes code, ensuring a safe, sandboxed interaction.
 
 ## Requirements
 
@@ -63,7 +52,7 @@ This repository includes a ready-to-edit example in `.mcp.json`:
       "command": "F:/_dev_drv_root_/Repos/SolutionServer/SolutionServer/SolutionServer/bin/Release/net10.0/win-x64/publish/SolutionServer.exe",
       "args": [],
       "env": {
-        "SOLUTION_SERVER_ROOT": "F:/_dev_drv_root_/Repos/SolutionServer/SolutionServer"     
+        "SOLUTION_SERVER_ROOT": "F:/_dev_drv_root_/Repos/SolutionServer/SolutionServer"        "SOLUTION_SERVER_ROOT": "F:/_dev_drv_root_/Repos/SolutionServer/SolutionServer"
       }
     }
   }
@@ -87,7 +76,7 @@ This repository includes a ready-to-edit example in `.vscode/mcp.json`:
       "command": "F:/_dev_drv_root_/Repos/SolutionServer/SolutionServer/SolutionServer/bin/Release/net10.0/win-x64/publish/SolutionServer.exe",
       "args": [],
       "env": {
-        "SOLUTION_SERVER_ROOT": "F:/_dev_drv_root_/Repos/SolutionServer/SolutionServer"
+        "SOLUTION_SERVER_ROOT": "F:/_dev_drv_root_/Repos/SolutionServer/SolutionServer"        "SOLUTION_SERVER_ROOT": "F:/_dev_drv_root_/Repos/SolutionServer/SolutionServer"
       }
     }
   }
@@ -108,7 +97,7 @@ To run the built executable directly from a local publish output:
       "command": "<ABSOLUTE PATH TO SolutionServer.exe>",
       "args": [],
       "env": {
-        "SOLUTION_SERVER_ROOT": "<ABSOLUTE WORKSPACE ROOT>" 
+        "SOLUTION_SERVER_ROOT": "<ABSOLUTE WORKSPACE ROOT>"        "SOLUTION_SERVER_ROOT": "<ABSOLUTE WORKSPACE ROOT>"
       }
     }
   }
