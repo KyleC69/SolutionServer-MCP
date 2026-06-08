@@ -7,12 +7,11 @@
       "command": "dnx",
       "args":
       [
-        "KC.SolutionServer@1.0.10"
+        "KC.SolutionServer@1.0.10",
+        "--yes"
       ],
       "env":
-      {
-        "SOLUTION_SERVER_ROOT": ".\\"
-      }
+      {}
     }
   }
 }

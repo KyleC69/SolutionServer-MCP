@@ -52,13 +52,9 @@
     <PackageIcon>AIFingerImage.png</PackageIcon>
     <AssemblyVersion>1.0.10</AssemblyVersion>
     <FileVersion>1.0.10</FileVersion>
-    <ToolCommandName />
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
   </PropertyGroup>
 
-  <ItemGroup>
-    <Content Include=".mcp\mcp.json" />
-  </ItemGroup>
 
 
 
@@ -68,7 +64,8 @@
       <Pack>True</Pack>
       <PackagePath>\</PackagePath>
     </None>
-    <None Include=".vscode\mcp.json" Pack="true" PackagePath="/.mcp/" />
+	  <None Include=".mcp\server.json" Pack="true" PackagePath="/.mcp/" />
+    <None Include=".vscode\mcp.json" Pack="true" PackagePath="/.vscode/" />
     <None Include="LICENSE" Pack="True" PackagePath="\" />
     <None Include="RELEASE_NOTES.md" Pack="true" PackagePath="/" />
   </ItemGroup>

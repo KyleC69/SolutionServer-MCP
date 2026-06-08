@@ -1,0 +1,27 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-10-17/server.schema.json",
+  "description": "SolutionServer is an MCP server that assists agents in gaining insight into the .NET project/solution system and helps manage token usage by providing efficient information retrieval and analysis.",
+  "name": "io.github.KyleC69/SolutionServer-MCP",
+  "version": "1.0.10",
+  "packages":
+  [
+    {
+      "registryType": "nuget",
+      "identifier": "KC.SolutionServer",
+      "version": "1.0.10",
+      "transport":
+      {
+        "type": "stdio"
+      },
+      "packageArguments":
+      [
+      ],
+      "environmentVariables": [ ]
+    }
+  ],
+  "repository":
+  {
+    "url": "https://github.com/KyleC69/SolutionServer-MCP",
+    "source": "github"
+  }
+}
