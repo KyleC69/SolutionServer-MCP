@@ -7,7 +7,7 @@
       "command": "dnx",
       "args":
       [
-        "KC.SolutionServer@1.0.6"
+        "KC.SolutionServer@1.0.10"
       ],
       "env":
       {

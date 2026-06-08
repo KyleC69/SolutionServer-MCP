@@ -8,14 +8,14 @@
     "url": "https://github.com/KyleC69/SolutionServer-MCP",
     "source": "github"
   },
-  "version": "1.0.6",
+  "version": "1.0.10",
   "packages":
   [
     {
       "registry_type": "nuget",
       "registry_base_url": "https://api.nuget.org/v3/index.json",
       "identifier": "KC.SolutionServer",
-      "version": "1.0.6",
+      "version": "1.0.10",
       "transport":
       {
         "type": "stdio"
@@ -37,7 +37,7 @@
     "command": "dnx",
     "args":
     [
-      "KC.SolutionServer@1.0.6",
+      "KC.SolutionServer@1.0.10",
       "--yes"
     ]
   }
