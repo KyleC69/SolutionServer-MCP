@@ -1,0 +1,44 @@
+﻿{
+  "$schema": "https://kylec69.github.io/schemas/mcp-server.schema.json",
+  "name": "io.github.KyleC69/SolutionServer-MCP",
+  "description": "An MCP server that provides [describe what your server does]",
+  "status": "active",
+  "repository":
+  {
+    "url": "https://github.com/KyleC69/SolutionServer-MCP",
+    "source": "github"
+  },
+  "version": "1.0.6",
+  "packages":
+  [
+    {
+      "registry_type": "nuget",
+      "registry_base_url": "https://api.nuget.org/v3/index.json",
+      "identifier": "KC.SolutionServer",
+      "version": "1.0.6",
+      "transport":
+      {
+        "type": "stdio"
+      }
+    }
+  ],
+  "server_details":
+  {
+    "icons":
+    [
+      {
+        "url": "https://raw.githubusercontent.com/KyleC69.github.io/images/aifinger.png",
+        "type": "image/png",
+        "size": "256x256"
+      }
+    ],
+    "runtime-hint": "dnx",
+    "transport": "stdio",
+    "command": "dnx",
+    "args":
+    [
+      "KC.SolutionServer@1.0.6",
+      "--yes"
+    ]
+  }
+}

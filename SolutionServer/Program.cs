@@ -3,7 +3,6 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
 using SolutionServer.Services;
-using SolutionServer.Tools;
 
 
 
@@ -19,7 +18,7 @@ internal class Program
 {
     private static async Task Main(string[] args)
     {
-        var builder = Host.CreateApplicationBuilder(args);
+        var builder = Host.CreateEmptyApplicationBuilder(null);
 
         // Configure all logs to go to stderr (stdout is used for the MCP protocol messages).
         builder.Logging.AddConsole(o => o.LogToStandardErrorThreshold = LogLevel.Trace);
@@ -30,7 +29,7 @@ internal class Program
         builder.Services
                 .AddMcpServer()
                 .WithStdioServerTransport()
-                .WithTools<WorkspaceTools>();
+                .WithToolsFromAssembly();
 
         await builder.Build().RunAsync();
     }

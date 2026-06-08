@@ -1,0 +1,9 @@
+{
+  "name": "SolutionServer-MCP",
+  "version": "1.0.0",
+  "description": "My MCP server",
+  "entry": ".\\SolutionServer.exe",
+  "repository": "https://github.com/KyleC69/SolutionServer-MCP",
+  "author": "Kyle",
+  "license": "MIT"
+}

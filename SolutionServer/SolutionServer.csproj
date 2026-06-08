@@ -7,22 +7,22 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <LangVersion>preview</LangVersion>
-    <AssemblyName>SolutionServer</AssemblyName>
+    <AssemblyName>SolutionServer-MCP</AssemblyName>
     <RootNamespace>SolutionServer</RootNamespace>
-    <Product>SolutionServer</Product>
-    <Title>SolutionServer</Title>
-    <Authors>SolutionServer Contributors</Authors>
-    <Company>SolutionServer Contributors</Company>
-    <Copyright>Copyright © SolutionServer Contributors</Copyright>
+    <Product>SolutionServer-MCP</Product>
+    <Title>SolutionServer-MCP</Title>
+    <Authors>Kyle L. Crowder</Authors>
+    <Copyright>Copyright © Kyle L. Crowder</Copyright>
     <RepositoryUrl>https://github.com/KyleC69/SolutionServer-MCP.git</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <PackageProjectUrl>https://github.com/KyleC69/SolutionServer-MCP.git</PackageProjectUrl>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
-	  <PublishDir>..\..\PublishOutput\</PublishDir>
     <Deterministic>true</Deterministic>
-    <ContinuousIntegrationBuild Condition="'$(CI)' != ''">true</ContinuousIntegrationBuild>
+
+    
+
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <NoWarn>$(NoWarn);CS1591</NoWarn>
 
@@ -44,21 +44,40 @@
     <!-- Set recommended package metadata -->
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageId>KC.SolutionServer</PackageId>
-    <PackageVersion>1.0.0</PackageVersion>
+    <PackageVersion>1.0.6</PackageVersion>
     <PackageTags>AI;MCP;server;stdio;dotnet;solution;workspace;developer-tools</PackageTags>
-    <Description>SolutionServer is a local MCP server for discovering .NET solutions, enumerating projects, listing project files, and reading bounded file content from a configured workspace root.</Description>
+    <Description>SolutionServer-MCP is a local MCP server to assist agents gain insight into the .Net project/solution system and and create to save token usage and prevent agent burn out.</Description>
     <Platforms>AnyCPU;x64</Platforms>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
     <PackageReleaseNotes>RELEASE_NOTES.md</PackageReleaseNotes>
+    <Version>1.06</Version>
+    <PackageIcon>AIFingerImage.png</PackageIcon>
+    <AssemblyVersion>1.0.6</AssemblyVersion>
+    <FileVersion>1.0.6</FileVersion>
   </PropertyGroup>
 
   <ItemGroup>
-    <Content Include=".vscode\settings.json" />
+    <Content Include=".mcp\mcp.json" />
   </ItemGroup>
+
+
 
   <!-- Include additional files for browsing the MCP server. -->
   <ItemGroup>
-    <None Include=".mcp\server.json" Pack="true" PackagePath="/.mcp/" />
+    <None Include="..\..\..\..\..\TommyCat\Pictures\AIFingerImage.png">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
+    <None Include="..\README.md">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
+    <None Include=".vscode\mcp.json" Pack="true" PackagePath="/.mcp/" />
+
+
+    <None Include="readme.md" Pack="true" PackagePath="/" />
+    <None Include="F:\_dev_drv_root_\Repos\SolutionServer\SolutionServer\.mcp.json" Pack="true" PackagePath="/.mcp/" Link=".mcp.json" />
+
     <None Include="LICENSE" Pack="true" PackagePath="/" />
     <None Include="RELEASE_NOTES.md" Pack="true" PackagePath="/" />
   </ItemGroup>
@@ -68,16 +87,7 @@
     <PackageReference Include="ModelContextProtocol" Version="1.4.0" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include=".github\" />
-  </ItemGroup>
 
-  <ItemGroup>
-    <None Update="README.md">
-      <Pack>True</Pack>
-      <PackagePath>\</PackagePath>
-    </None>
-  </ItemGroup>
   <Target Name="ShowPublishPath" AfterTargets="AfterPublish">
 	  <Message Importance="High" Text="Publish directory: $(PublishDir)" />
   </Target>
