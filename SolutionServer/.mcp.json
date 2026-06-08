@@ -1,0 +1,21 @@
+{
+  "inputs":
+  [
+  ],
+  "servers":
+  {
+    "SolutionServer-MCP":
+    {
+      "type": "stdio",
+      "command": "dnx",
+      "args":
+      [
+        "KC.SolutionServer@1.0.10",
+        "--yes"
+      ],
+      "env":
+      {
+      }
+    }
+  }
+}

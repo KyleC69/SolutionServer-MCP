@@ -1,153 +1,132 @@
-﻿using System.Xml.Linq;
+﻿// Solution: SolutionServer
+// Project:   SolutionServer
+// File:         WorkspaceService.cs
+// Author: Kyle L. Crowder
+// Build Date: 2026/06/08
+
+
+
+using System.Xml.Linq;
 
 using SolutionServer.Models;
 
+
+
+
 namespace SolutionServer.Services;
+
+
+
+
 
 internal sealed class WorkspaceService
 {
-    private const string WorkspaceRootEnvironmentVariable = "SOLUTION_SERVER_ROOT";
     private const int MaxFileResults = 500;
     private const int MaxReadLines = 400;
-    private static readonly string[] ProjectPatterns = ["*.csproj", "*.fsproj", "*.vbproj"];
+    private const string WorkspaceRootEnvironmentVariable = "SOLUTION_SERVER_ROOT";
+
     private static readonly HashSet<string> IgnoredDirectories = new(StringComparer.OrdinalIgnoreCase)
     {
-        ".git",
-        ".hg",
-        ".svn",
-        ".vs",
-        ".vscode",
-        ".idea",
-        "bin",
-        "obj",
-        "node_modules",
-        "artifacts"
+            ".git",
+            ".hg",
+            ".svn",
+            ".vs",
+            ".vscode",
+            ".idea",
+            "bin",
+            "obj",
+            "node_modules",
+            "artifacts"
     };
 
-    public WorkspaceSummary GetWorkspaceSummary()
-    {
-        var workspaceRoot = ResolveWorkspaceRoot();
-        var projects = DiscoverProjects(workspaceRoot);
-        var solutionFile = FindSolutionFile(workspaceRoot);
+    private static readonly string[] ProjectPatterns = ["*.csproj", "*.fsproj", "*.vbproj"];
 
-        return new WorkspaceSummary(
-            workspaceRoot,
-            solutionFile is null ? null : ToRelativePath(workspaceRoot, solutionFile),
-            projects.Count,
-            projects);
+
+
+
+
+
+
+
+    private static ProjectInfo CreateProjectInfo(string workspaceRoot, string projectPath)
+    {
+        XDocument document = XDocument.Load(projectPath, LoadOptions.None);
+        XElement? root = document.Root;
+        string? targetFramework = root?.Descendants().FirstOrDefault(element => element.Name.LocalName is "TargetFramework" or "TargetFrameworks")?.Value;
+        string? outputType = root?.Descendants().FirstOrDefault(element => element.Name.LocalName == "OutputType")?.Value;
+
+        return new ProjectInfo(Path.GetFileNameWithoutExtension(projectPath), ToRelativePath(workspaceRoot, projectPath), ToRelativePath(workspaceRoot, Path.GetDirectoryName(projectPath) ?? workspaceRoot), string.IsNullOrWhiteSpace(targetFramework) ? null : targetFramework, string.IsNullOrWhiteSpace(outputType) ? null : outputType);
     }
 
-    public IReadOnlyList<ProjectInfo> ListProjects()
-    {
-        var workspaceRoot = ResolveWorkspaceRoot();
-        return DiscoverProjects(workspaceRoot);
-    }
 
-    public ProjectFilesResult ListProjectFiles(string projectPath, int maxResults)
-    {
-        var workspaceRoot = ResolveWorkspaceRoot();
-        var projectFullPath = GetValidatedPath(workspaceRoot, projectPath, mustExist: true);
 
-        if (!ProjectPatterns.Any(pattern => projectFullPath.EndsWith(pattern[1..], StringComparison.OrdinalIgnoreCase)))
-        {
-            throw new InvalidOperationException("The supplied path is not a supported project file.");
-        }
 
-        var projectDirectory = Path.GetDirectoryName(projectFullPath)
-            ?? throw new InvalidOperationException("The project path did not resolve to a directory.");
 
-        var boundedResults = Math.Clamp(maxResults, 1, MaxFileResults);
-        var files = EnumerateWorkspaceFiles(projectDirectory)
-            .Select(path => ToRelativePath(workspaceRoot, path))
-            .Take(boundedResults)
-            .ToArray();
 
-        return new ProjectFilesResult(ToRelativePath(workspaceRoot, projectFullPath), files.Length, files);
-    }
 
-    public FileReadResult ReadTextFile(string path, int startLine, int lineCount)
-    {
-        var workspaceRoot = ResolveWorkspaceRoot();
-        var fullPath = GetValidatedPath(workspaceRoot, path, mustExist: true);
-        var boundedStartLine = Math.Max(startLine, 1);
-        var boundedLineCount = Math.Clamp(lineCount, 1, MaxReadLines);
-        var lines = File.ReadLines(fullPath).Skip(boundedStartLine - 1).Take(boundedLineCount).ToArray();
-        var endLine = lines.Length == 0 ? boundedStartLine : boundedStartLine + lines.Length - 1;
-
-        return new FileReadResult(
-            ToRelativePath(workspaceRoot, fullPath),
-            boundedStartLine,
-            endLine,
-            string.Join(Environment.NewLine, lines));
-    }
 
     private static IReadOnlyList<ProjectInfo> DiscoverProjects(string workspaceRoot)
     {
-        var projects = ProjectPatterns
-            .SelectMany(pattern => Directory.EnumerateFiles(workspaceRoot, pattern, SearchOption.AllDirectories))
-            .Where(path => !IsInIgnoredDirectory(workspaceRoot, path))
-            .OrderBy(path => path, StringComparer.OrdinalIgnoreCase)
-            .Select(path => CreateProjectInfo(workspaceRoot, path))
-            .ToArray();
+        ProjectInfo[] projects = ProjectPatterns.SelectMany(pattern => Directory.EnumerateFiles(workspaceRoot, pattern, SearchOption.AllDirectories)).Where(path => !IsInIgnoredDirectory(workspaceRoot, path)).OrderBy(path => path, StringComparer.OrdinalIgnoreCase).Select(path => CreateProjectInfo(workspaceRoot, path)).ToArray();
 
         return projects;
     }
 
-    private static ProjectInfo CreateProjectInfo(string workspaceRoot, string projectPath)
-    {
-        var document = XDocument.Load(projectPath, LoadOptions.None);
-        var root = document.Root;
-        var targetFramework = root?
-            .Descendants()
-            .FirstOrDefault(element => element.Name.LocalName is "TargetFramework" or "TargetFrameworks")?
-            .Value;
-        var outputType = root?
-            .Descendants()
-            .FirstOrDefault(element => element.Name.LocalName == "OutputType")?
-            .Value;
 
-        return new ProjectInfo(
-            Path.GetFileNameWithoutExtension(projectPath),
-            ToRelativePath(workspaceRoot, projectPath),
-            ToRelativePath(workspaceRoot, Path.GetDirectoryName(projectPath) ?? workspaceRoot),
-            string.IsNullOrWhiteSpace(targetFramework) ? null : targetFramework,
-            string.IsNullOrWhiteSpace(outputType) ? null : outputType);
-    }
 
-    private static string ResolveWorkspaceRoot()
+
+
+
+
+
+    private static IEnumerable<string> EnumerateWorkspaceFiles(string root)
     {
-        var configuredRoot = Environment.GetEnvironmentVariable(WorkspaceRootEnvironmentVariable);
-        if (!string.IsNullOrWhiteSpace(configuredRoot))
+        Stack<string> pending = new();
+        pending.Push(root);
+
+        while (pending.Count > 0)
         {
-            var fullConfiguredRoot = Path.GetFullPath(configuredRoot);
-            if (!Directory.Exists(fullConfiguredRoot))
+            string current = pending.Pop();
+
+            foreach (string directory in Directory.EnumerateDirectories(current).OrderBy(path => path, StringComparer.OrdinalIgnoreCase))
             {
-                throw new DirectoryNotFoundException($"The configured workspace root '{fullConfiguredRoot}' does not exist.");
+                if (IgnoredDirectories.Contains(Path.GetFileName(directory)))
+                {
+                    continue;
+                }
+
+                pending.Push(directory);
             }
 
-            return fullConfiguredRoot;
+            foreach (string file in Directory.EnumerateFiles(current).OrderBy(path => path, StringComparer.OrdinalIgnoreCase)) yield return file;
         }
-
-        foreach (var candidate in new[] { Directory.GetCurrentDirectory(), AppContext.BaseDirectory })
-        {
-            var discoveredRoot = FindWorkspaceRoot(candidate);
-            if (discoveredRoot is not null)
-            {
-                return discoveredRoot;
-            }
-        }
-
-        return Directory.GetCurrentDirectory();
     }
+
+
+
+
+
+
+
+
+    private static string? FindSolutionFile(string workspaceRoot)
+    {
+        return Directory.EnumerateFiles(workspaceRoot, "*.sln", SearchOption.TopDirectoryOnly).Concat(Directory.EnumerateFiles(workspaceRoot, "*.slnx", SearchOption.TopDirectoryOnly)).OrderBy(path => path, StringComparer.OrdinalIgnoreCase).FirstOrDefault();
+    }
+
+
+
+
+
+
+
 
     private static string? FindWorkspaceRoot(string startDirectory)
     {
-        var directory = new DirectoryInfo(Path.GetFullPath(startDirectory));
+        DirectoryInfo? directory = new(Path.GetFullPath(startDirectory));
         while (directory is not null)
         {
-            if (directory.EnumerateFiles("*.sln", SearchOption.TopDirectoryOnly).Any()
-                || directory.EnumerateFiles("*.slnx", SearchOption.TopDirectoryOnly).Any()
-                || directory.EnumerateFiles("*.csproj", SearchOption.TopDirectoryOnly).Any())
+            if (directory.EnumerateFiles("*.sln", SearchOption.TopDirectoryOnly).Any() || directory.EnumerateFiles("*.slnx", SearchOption.TopDirectoryOnly).Any() || directory.EnumerateFiles("*.csproj", SearchOption.TopDirectoryOnly).Any())
             {
                 return directory.FullName;
             }
@@ -158,46 +137,12 @@ internal sealed class WorkspaceService
         return null;
     }
 
-    private static string? FindSolutionFile(string workspaceRoot)
-    {
-        return Directory.EnumerateFiles(workspaceRoot, "*.sln", SearchOption.TopDirectoryOnly)
-            .Concat(Directory.EnumerateFiles(workspaceRoot, "*.slnx", SearchOption.TopDirectoryOnly))
-            .OrderBy(path => path, StringComparer.OrdinalIgnoreCase)
-            .FirstOrDefault();
-    }
 
-    private static IEnumerable<string> EnumerateWorkspaceFiles(string root)
-    {
-        var pending = new Stack<string>();
-        pending.Push(root);
 
-        while (pending.Count > 0)
-        {
-            var current = pending.Pop();
 
-            foreach (var directory in Directory.EnumerateDirectories(current).OrderBy(path => path, StringComparer.OrdinalIgnoreCase))
-            {
-                if (IgnoredDirectories.Contains(Path.GetFileName(directory)))
-                {
-                    continue;
-                }
 
-                pending.Push(directory);
-            }
 
-            foreach (var file in Directory.EnumerateFiles(current).OrderBy(path => path, StringComparer.OrdinalIgnoreCase))
-            {
-                yield return file;
-            }
-        }
-    }
 
-    private static bool IsInIgnoredDirectory(string workspaceRoot, string path)
-    {
-        var relativePath = Path.GetRelativePath(workspaceRoot, path);
-        var segments = relativePath.Split(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
-        return segments.Any(IgnoredDirectories.Contains);
-    }
 
     private static string GetValidatedPath(string workspaceRoot, string relativePath, bool mustExist)
     {
@@ -206,7 +151,7 @@ internal sealed class WorkspaceService
             throw new ArgumentException("A relative path is required.", nameof(relativePath));
         }
 
-        var fullPath = Path.GetFullPath(Path.Combine(workspaceRoot, relativePath));
+        string fullPath = Path.GetFullPath(Path.Combine(workspaceRoot, relativePath));
         if (!fullPath.StartsWith(workspaceRoot, StringComparison.OrdinalIgnoreCase))
         {
             throw new InvalidOperationException("Only files inside the configured workspace root can be accessed.");
@@ -219,6 +164,133 @@ internal sealed class WorkspaceService
 
         return fullPath;
     }
+
+
+
+
+
+
+
+
+    public WorkspaceSummary GetWorkspaceSummary()
+    {
+        string workspaceRoot = ResolveWorkspaceRoot();
+        IReadOnlyList<ProjectInfo> projects = DiscoverProjects(workspaceRoot);
+        string? solutionFile = FindSolutionFile(workspaceRoot);
+
+        return new WorkspaceSummary(workspaceRoot, solutionFile is null ? null : ToRelativePath(workspaceRoot, solutionFile), projects.Count, projects);
+    }
+
+
+
+
+
+
+
+
+    private static bool IsInIgnoredDirectory(string workspaceRoot, string path)
+    {
+        string relativePath = Path.GetRelativePath(workspaceRoot, path);
+        string[] segments = relativePath.Split(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
+        return segments.Any(IgnoredDirectories.Contains);
+    }
+
+
+
+
+
+
+
+
+    public ProjectFilesResult ListProjectFiles(string projectPath, int maxResults)
+    {
+        string workspaceRoot = ResolveWorkspaceRoot();
+        string projectFullPath = GetValidatedPath(workspaceRoot, projectPath, true);
+
+        if (!ProjectPatterns.Any(pattern => projectFullPath.EndsWith(pattern[1..], StringComparison.OrdinalIgnoreCase)))
+        {
+            throw new InvalidOperationException("The supplied path is not a supported project file.");
+        }
+
+        string projectDirectory = Path.GetDirectoryName(projectFullPath) ?? throw new InvalidOperationException("The project path did not resolve to a directory.");
+
+        int boundedResults = Math.Clamp(maxResults, 1, MaxFileResults);
+        string[] files = EnumerateWorkspaceFiles(projectDirectory).Select(path => ToRelativePath(workspaceRoot, path)).Take(boundedResults).ToArray();
+
+        return new ProjectFilesResult(ToRelativePath(workspaceRoot, projectFullPath), files.Length, files);
+    }
+
+
+
+
+
+
+
+
+    public IReadOnlyList<ProjectInfo> ListProjects()
+    {
+        string workspaceRoot = ResolveWorkspaceRoot();
+        return DiscoverProjects(workspaceRoot);
+    }
+
+
+
+
+
+
+
+
+    public FileReadResult ReadTextFile(string path, int startLine, int lineCount)
+    {
+        string workspaceRoot = ResolveWorkspaceRoot();
+        string fullPath = GetValidatedPath(workspaceRoot, path, true);
+        int boundedStartLine = Math.Max(startLine, 1);
+        int boundedLineCount = Math.Clamp(lineCount, 1, MaxReadLines);
+        string[] lines = File.ReadLines(fullPath).Skip(boundedStartLine - 1).Take(boundedLineCount).ToArray();
+        int endLine = lines.Length == 0 ? boundedStartLine : boundedStartLine + lines.Length - 1;
+
+        return new FileReadResult(ToRelativePath(workspaceRoot, fullPath), boundedStartLine, endLine, string.Join(Environment.NewLine, lines));
+    }
+
+
+
+
+
+
+
+
+    private static string ResolveWorkspaceRoot()
+    {
+        string? configuredRoot = Environment.GetEnvironmentVariable(WorkspaceRootEnvironmentVariable);
+        if (!string.IsNullOrWhiteSpace(configuredRoot))
+        {
+            string fullConfiguredRoot = Path.GetFullPath(configuredRoot);
+            if (!Directory.Exists(fullConfiguredRoot))
+            {
+                throw new DirectoryNotFoundException($"The configured workspace root '{fullConfiguredRoot}' does not exist.");
+            }
+
+            return fullConfiguredRoot;
+        }
+
+        foreach (string candidate in new[] { Directory.GetCurrentDirectory(), AppContext.BaseDirectory })
+        {
+            string? discoveredRoot = FindWorkspaceRoot(candidate);
+            if (discoveredRoot is not null)
+            {
+                return discoveredRoot;
+            }
+        }
+
+        return Directory.GetCurrentDirectory();
+    }
+
+
+
+
+
+
+
 
     private static string ToRelativePath(string workspaceRoot, string path)
     {

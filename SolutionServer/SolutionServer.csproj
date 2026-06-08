@@ -1,89 +1,86 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFramework>net10.0</TargetFramework>
-    <OutputType>Exe</OutputType>
-    <Nullable>enable</Nullable>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <LangVersion>preview</LangVersion>
-    <AssemblyName>SolutionServer-MCP</AssemblyName>
-    <RootNamespace>SolutionServer</RootNamespace>
-    <Product>SolutionServer-MCP</Product>
-    <Title>KC.SolutionServer</Title>
-    <Authors>Kyle L. Crowder</Authors>
-    <Copyright>Copyright © Kyle L. Crowder</Copyright>
-    <RepositoryUrl>https://github.com/KyleC69/SolutionServer-MCP.git</RepositoryUrl>
-    <RepositoryType>git</RepositoryType>
-    <PackageProjectUrl>https://github.com/KyleC69/SolutionServer-MCP.git</PackageProjectUrl>
-    <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
-    <PublishRepositoryUrl>true</PublishRepositoryUrl>
-    <Deterministic>true</Deterministic>
-
-    
-
-    <GenerateDocumentationFile>true</GenerateDocumentationFile>
-    <NoWarn>$(NoWarn);CS1591</NoWarn>
-
-    <!-- Set up the NuGet package to be an MCP server -->
-    <PackAsTool>true</PackAsTool>
-    <PackageType>McpServer</PackageType>
-
-    <!-- Set up the MCP server to be a self-contained application that does not rely on a shared framework -->
-    <SelfContained>true</SelfContained>
-    <PublishSelfContained>true</PublishSelfContained>
-
-    <!-- Set up the MCP server to be a single file executable -->
-    <PublishSingleFile>true</PublishSingleFile>
-
-    <!-- Configure the MCP server to be a native AOT application with invariant globalization -->
-    <PublishAot>false</PublishAot>
-    <InvariantGlobalization>true</InvariantGlobalization>
-
-    <!-- Set recommended package metadata -->
-    <PackageReadmeFile>README.md</PackageReadmeFile>
-    <PackageId>KC.SolutionServer</PackageId>
-    <PackageVersion>1.0.10</PackageVersion>
-    <PackageTags>AI;MCP;server;stdio;dotnet;solution;workspace;developer-tools</PackageTags>
-    <Description>SolutionServer-MCP is a local MCP server to assist agents gain insight into the .Net project/solution system and and create to save token usage and prevent agent burn out.</Description>
-    <Platforms>AnyCPU;x64</Platforms>
-    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
-    <PackageReleaseNotes>RELEASE_NOTES.md</PackageReleaseNotes>
-    <Version>1.0.10</Version>
-    <PackageIcon>AIFingerImage.png</PackageIcon>
-    <AssemblyVersion>1.0.10</AssemblyVersion>
-    <FileVersion>1.0.10</FileVersion>
-    <PackageLicenseFile>LICENSE</PackageLicenseFile>
-  </PropertyGroup>
+	<PropertyGroup>
+		<TargetFramework>net10.0</TargetFramework>
+		<OutputType>Exe</OutputType>
+		<Nullable>enable</Nullable>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<LangVersion>preview</LangVersion>
+		<AssemblyName>SolutionServer-MCP</AssemblyName>
+		<RootNamespace>SolutionServer</RootNamespace>
+		<Product>SolutionServer-MCP</Product>
+		<Title>KC.SolutionServer</Title>
+		<Authors>Kyle L. Crowder</Authors>
+		<Copyright>Copyright © Kyle L. Crowder</Copyright>
+		<RepositoryUrl>https://github.com/KyleC69/SolutionServer-MCP.git</RepositoryUrl>
+		<RepositoryType>git</RepositoryType>
+		<PackageProjectUrl>https://github.com/KyleC69/SolutionServer-MCP.git</PackageProjectUrl>
+		<PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
+		<PublishRepositoryUrl>true</PublishRepositoryUrl>
+		<Deterministic>true</Deterministic>
 
 
+		<GenerateDocumentationFile>true</GenerateDocumentationFile>
+		<NoWarn>$(NoWarn);CS1591</NoWarn>
+
+		<!-- Set up the NuGet package to be an MCP server -->
+		<PackAsTool>true</PackAsTool>
+		<PackageType>McpServer</PackageType>
+
+		<!-- Set up the MCP server to be a self-contained application that does not rely on a shared framework -->
+		<SelfContained>true</SelfContained>
+		<PublishSelfContained>true</PublishSelfContained>
+
+		<!-- Set up the MCP server to be a single file executable -->
+		<PublishSingleFile>true</PublishSingleFile>
+
+		<!-- Configure the MCP server to be a native AOT application with invariant globalization -->
+		<PublishAot>false</PublishAot>
+		<InvariantGlobalization>true</InvariantGlobalization>
+
+		<!-- Set recommended package metadata -->
+		<PackageReadmeFile>README.md</PackageReadmeFile>
+		<PackageId>KC.SolutionServer</PackageId>
+		<PackageVersion>1.0.10</PackageVersion>
+		<PackageTags>AI;MCP;server;stdio;dotnet;solution;workspace;developer-tools</PackageTags>
+		<Description>SolutionServer-MCP is a local MCP server to assist agents gain insight into the .Net project/solution system and and create to save token usage and prevent agent burn out.</Description>
+		<Platforms>AnyCPU;x64</Platforms>
+		<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+		<PackageReleaseNotes>RELEASE_NOTES.md</PackageReleaseNotes>
+		<Version>1.0.10</Version>
+		<PackageIcon>AIFingerImage.png</PackageIcon>
+		<AssemblyVersion>1.0.10</AssemblyVersion>
+		<FileVersion>1.0.10</FileVersion>
+		<PackageLicenseFile>LICENSE</PackageLicenseFile>
+	</PropertyGroup>
 
 
-  <!-- Include additional files for browsing the MCP server. -->
-  <ItemGroup>
-    <None Include="..\README.md">
-      <Pack>True</Pack>
-      <PackagePath>\</PackagePath>
-    </None>
-	  <None Include=".mcp\server.json" Pack="true" PackagePath="/.mcp/" />
-    <None Include=".vscode\mcp.json" Pack="true" PackagePath="/.vscode/" />
-    <None Include="LICENSE" Pack="True" PackagePath="\" />
-    <None Include="RELEASE_NOTES.md" Pack="true" PackagePath="/" />
-  </ItemGroup>
+	<!-- Include additional files for browsing the MCP server. -->
+	<ItemGroup>
+		<None Include="..\README.md">
+			<Pack>True</Pack>
+			<PackagePath>\</PackagePath>
+		</None>
+		<None Include=".mcp\server.json" Pack="true" PackagePath="/.mcp/" />
+		<None Include=".vscode\mcp.json" Pack="true" PackagePath="/.vscode/" />
+		<None Include="LICENSE" Pack="True" PackagePath="\" />
+		<None Include="RELEASE_NOTES.md" Pack="true" PackagePath="/" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <PackageReference Include="Microsoft.Extensions.Hosting" Version="10.0.8" />
-    <PackageReference Include="ModelContextProtocol" Version="1.4.0" />
-  </ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="Microsoft.Extensions.Hosting" Version="10.0.8" />
+		<PackageReference Include="ModelContextProtocol" Version="1.4.0" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <None Include="Assets\AIFingerImage.png">
-      <Pack>True</Pack>
-      <PackagePath>\</PackagePath>
-    </None>
-  </ItemGroup>
+	<ItemGroup>
+		<None Include="Assets\AIFingerImage.png">
+			<Pack>True</Pack>
+			<PackagePath>\</PackagePath>
+		</None>
+	</ItemGroup>
 
 
-  <Target Name="ShowPublishPath" AfterTargets="AfterPublish">
-	  <Message Importance="High" Text="Publish directory: $(PublishDir)" />
-  </Target>
+	<Target Name="ShowPublishPath" AfterTargets="AfterPublish">
+		<Message Importance="High" Text="Publish directory: $(PublishDir)" />
+	</Target>
 </Project>
